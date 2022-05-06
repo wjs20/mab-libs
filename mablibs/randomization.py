@@ -4,6 +4,7 @@ import operator
 import re
 import functools
 import warnings
+import random
 
 MAX_SEQUENCES_IN_MEM = 10_000
 
@@ -34,6 +35,17 @@ class Randomization:
                 return list(it.islice(mutations, 0, first or MAX_SEQUENCES_IN_MEM))
         else:
             return mutations
+
+    def sample(self, k):
+        mutations = self.get_mutations()
+        indices = set(random.choices(range(0, self.library_size), k=k))
+        for i, pos_res_pairs_list in mutations:
+            if i in indices:
+                yield pos_res_pairs_list
+
+    @functools.cached_property
+    def library_size():
+        return
     
     @staticmethod
     def zip_keys_to_vals(position_residue_mapping):
