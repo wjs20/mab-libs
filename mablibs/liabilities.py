@@ -12,24 +12,32 @@ M = 'ATG'
 T = 'AC[TCAG]'
 
 # antibody liabilities identified by their codon regexrps
+#liability_specification = (
+#        ('GLYCOSYLATION_MOTIF', r'AA[TC](?!CC[TCAG])[ATCG]{3}(TC[TCAG]|AG[TC]|AC[TCAG])'),
+#        ('DEAMIDATION_MOTIF', r'AA[TC](GG[TCAG]|TC[TCAG]|AG[TC]|AC[TCAG])'),
+#        ('ISOMERIZATION_MOTIF', r'GA[TC](GG[TCAG]|TC[TCAG]|AG[TC])'),
+#        ('CLEAVAGE_MOTIF', r'GA[TC]CC[TCAG]'),
+#        ('OXIDATION_MOTIF', r'ATG')
+#    )
+
 liability_specification = (
-        ('GLYCOSYLATION_MOTIF', r'AA[TC](?!CC[TCAG])[ATCG]{3}(TC[TCAG]|AG[TC]|AC[TCAG])'),
-        ('DEAMIDATION_MOTIF', r'AA[TC](GG[TCAG]|TC[TCAG]|AG[TC]|AC[TCAG])'),
-        ('ISOMERIZATION_MOTIF', r'GA[TC](GG[TCAG]|TC[TCAG]|AG[TC])'),
-        ('CLEAVAGE_MOTIF', r'GA[TC]CC[TCAG]'),
-        ('OXIDATION_MOTIF', r'ATG')
+        ('GLYCOSYLATION_MOTIF', r'N[^P][ST]'),
+        ('DEAMIDATION_MOTIF',   r'N[GSA]'),
+        ('ISOMERIZATION_MOTIF', r'D[GS]'),
+        ('CLEAVAGE_MOTIF',      r'DP'),
+        ('OXIDATION_MOTIF',     r'M')
     )
 
 liability_regex = re.compile('|'.join('(?P<%s>%s)' % pair for pair in liability_specification))
 
-Liability = namedtuple('Liability', 'kind start end')
+Liability = namedtuple('Liability', 'kind match start end')
 
 def find_liabilities(seq, report=False):
     matches = list(liability_regex.finditer(seq))
     if not matches: return 
     if not report: return True
     return [
-        Liability(mo.lastgroup, mo.start(), mo.end())
+        Liability(mo.lastgroup, mo.group(0), mo.start(), mo.end())
         for mo in matches
     ]
 

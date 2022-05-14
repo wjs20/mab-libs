@@ -76,7 +76,7 @@ class TwomerRandomization(Randomization):
             in it.combinations(self.position_residue_mapping.items(), 2)
         )
 
-class TrimerRandomization(Randomization):
+class RandomTrimerRandomization(Randomization):
     def _group_by_position(self, mutations):
         position_getter = operator.itemgetter(0)
         return [
@@ -109,7 +109,7 @@ if __name__ == '__main__':
     assert twomer.library_size == 6804
     assert twomer.get_mutations(generator=False, first=1) == [((0, 'a'), (1, 'a'))]
 
-    trimer = TrimerRandomization(position_residue_mapping)
+    trimer = RandomTrimerRandomization(position_residue_mapping)
     assert trimer.library_size == 612220032
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
