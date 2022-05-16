@@ -49,7 +49,7 @@ class RandomizationStrategy:
             (1,'A'), (1,'D'), ..., (3, 'V'), (3, 'W')
         """
         return it.chain.from_iterable(
-            self.zip_keys_to_vals(self.position_residue_mapping)
+            self._zip_keys_to_vals(self.position_residue_mapping)
         )
 
     def _create_combinations(self) -> None:
@@ -131,7 +131,7 @@ class RandomizationStrategy:
         return
 
     @staticmethod
-    def zip_keys_to_vals(
+    def _zip_keys_to_vals(
         position_residue_mapping: Dict[int, List[str]]
     ) -> List[List[Mutation]]:
         """
