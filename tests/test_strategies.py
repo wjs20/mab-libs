@@ -1,4 +1,4 @@
-from mablibs.randomizations import *
+from mablibs.strategies import *
 import pytest
 
 @pytest.fixture()
@@ -11,14 +11,14 @@ def position_residue_mapping():
 
 @pytest.fixture
 def twomerrandomization(position_residue_mapping):
-    return TwomerRandomization(position_residue_mapping)
+    return NmerRandomizationStrategy(2, position_residue_mapping)
 
 @pytest.fixture
 def randomtrimerrandomization(position_residue_mapping):
-    return RandomTrimerRandomization(position_residue_mapping)
+    return RandomTrimerRandomizationStrategy(position_residue_mapping)
 
 def test_randomization_zip_keys_to_vals(position_residue_mapping):
-    r = Randomization(position_residue_mapping)
+    r = RandomizationStrategy(position_residue_mapping)
     assert r.zip_keys_to_vals(position_residue_mapping) == [
             [(1, 'A'), (1, 'C'), (1, 'D'), (1, 'E')],
             [(3, 'A'), (3, 'C'), (3, 'D'), (3, 'E')],
