@@ -119,7 +119,7 @@ class RandomizationStrategy:
             random.seed(42)
 
         sample_indices = set(random.choices(library_idxs, k=k))
-        for i, mutation in mutations:
+        for i, mutation in enumerate(mutations):
             if i in sample_indices:
                 yield mutation
 
@@ -280,23 +280,3 @@ class RandomTrimerRandomizationStrategy(RandomizationStrategy):
     @functools.cached_property
     def library_size(self):
         return self._mul_lens(self.position_residue_mapping.values())
-
-
-if __name__ == "__main__":
-
-    n_positions = 7
-    position_residue_mapping = dict(
-        zip(range(n_positions), [string.ascii_letters[:18]] * n_positions)
-    )
-
-    twomer = NmerRandomizationStrategy(2, position_residue_mapping)
-    assert twomer.library_size == 6804
-    assert twomer.get_mutations(generator=False, first=1) == [((0, "a"), (1, "a"))]
-
-    trimer = RandomTrimerRandomizationStrategy(position_residue_mapping)
-    assert trimer.library_size == 612220032
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        assert trimer.get_mutations(generator=False, first=1) == [
-            ((0, "a"), (1, "a"), (2, "a"), (3, "a"), (4, "a"), (5, "a"), (6, "a"))
-        ]
