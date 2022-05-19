@@ -3,14 +3,7 @@ import operator
 import pkgutil
 from typing import List, Tuple
 from dataclasses import dataclass
-
-AA2CODON = json.loads(
-    pkgutil.get_data("mablibs", "amino_acid2codon.json").decode("utf-8")
-)
-
-CODON2AA = json.loads(
-    pkgutil.get_data("mablibs", "codon2amino_acid.json").decode("utf-8")
-)
+from mablibs import codons
 
 @dataclass
 class Template:
@@ -21,6 +14,6 @@ class Template:
 
     def translation(self) -> str:
         try:
-            return "".join([CODON2AA[codon] for codon in self.codons()])
+            return "".join([codons.CODON2AA[codon] for codon in self.codons()])
         except KeyError as e:
             raise NotImplementedError(f'Amino acid could not be found, error: {e}')
