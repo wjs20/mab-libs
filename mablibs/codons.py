@@ -1,29 +1,26 @@
-"""
-Module contains data related to the translation of DNA to amino acid sequences 
-"""
-from typing import Dict
+COMPLEMENTARY_BASES = {"A": "T", "T": "A", "C": "G", "G": "C"}
 
 AA2CODON = {
-    "F": ["TTT", "TTC", "TTA", "TTG"],
-    "L": ["CTT", "CTC", "CTA", "CTG"],
-    "I": ["ATT", "ATC", "ATA"],
-    "M": ["ATG"],
-    "V": ["GTT", "GTC", "GTA", "GTG"],
-    "S": ["TCT", "TCC", "TCA", "TCG", "AGT", "AGC"],
-    "P": ["CCT", "CCC", "CCA", "CCG"],
-    "T": ["ACT", "ACC", "ACA", "ACG"],
-    "A": ["GCT", "GCC", "GCA", "GCG"],
-    "Y": ["TAT", "TAC"],
-    "H": ["CAT", "CAC"],
-    "Q": ["CAA", "CAG"],
-    "N": ["AAT", "AAC"],
-    "K": ["AAA", "AAG"],
-    "D": ["GAT", "GAC"],
-    "E": ["GAA", "GAG"],
-    "C": ["TGT", "TGC"],
-    "W": ["TGG"],
-    "R": ["CGT", "CGC", "CGA", "CGG", "AGA", "AGG"],
-    "G": ["GGT", "GGC", "GGA", "GGG"],
+    "F": ("TTT", "TTC", "TTA", "TTG"),
+    "L": ("CTT", "CTC", "CTA", "CTG"),
+    "I": ("ATT", "ATC", "ATA"),
+    "M": ("ATG",),
+    "V": ("GTT", "GTC", "GTA", "GTG"),
+    "S": ("TCT", "TCC", "TCA", "TCG", "AGT", "AGC"),
+    "P": ("CCT", "CCC", "CCA", "CCG"),
+    "T": ("ACT", "ACC", "ACA", "ACG"),
+    "A": ("GCT", "GCC", "GCA", "GCG"),
+    "Y": ("TAT", "TAC"),
+    "H": ("CAT", "CAC"),
+    "Q": ("CAA", "CAG"),
+    "N": ("AAT", "AAC"),
+    "K": ("AAA", "AAG"),
+    "D": ("GAT", "GAC"),
+    "E": ("GAA", "GAG"),
+    "C": ("TGT", "TGC"),
+    "W": ("TGG",),
+    "R": ("CGT", "CGC", "CGA", "CGG", "AGA", "AGG"),
+    "G": ("GGT", "GGC", "GGA", "GGG"),
 }
 
 CODON2AA = {
@@ -91,7 +88,7 @@ CODON2AA = {
 }
 
 ## Codon biases
-# fields: [triplet] [frequency: per thousand]
+# fields: (triplet) (frequency: per thousand)
 # source https://www.kazusa.or.jp/codon/
 CODON_FREQUENCIES = {
     "HUMAN": {
@@ -359,28 +356,3 @@ CODON_FREQUENCIES = {
         "TTT": 19.6,
     },
 }
-
-
-def aa2codon_sorted_by_frequency(species: str) -> Dict[str, float]:
-    """Function sorts the codons specifying each amino acid such that codon[0] is the 
-    most frequently found codon in nature and codon[-1] is the least most frequently found.
-    This helps ensure codon replacement does not affect expression.
-
-    Args:
-        species (str): a string specifying the species. Can be one of: human, hamster, e_coli or yeast
-
-    Raises:
-        NotImplementedError: raised if specified species is not in CODON_FREQUENCIES dict
-
-    Returns:
-        Dict[str, float]: a dict mapping residues onto codons sorted by frequency hi -> lo
-    """
-    try:
-        frequencies = CODON_FREQUENCIES[species.upper()]
-    except KeyError:
-        raise NotImplementedError(f'species "{species}" is not supported, check list of available species in codons.py')
-
-    return {
-        aa: sorted(codons, key=lambda x: frequencies.get(x), reverse=True)
-        for aa, codons in AA2CODON.items()
-    }
