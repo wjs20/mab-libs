@@ -1,5 +1,6 @@
 import re
 from collections import namedtuple
+from typing import Union
 
 amino_acid_ptm_specification = (
     ("GLYCOSYLATION_MOTIF", r"N[^P][ST]"),
@@ -19,10 +20,12 @@ amino_acid_ptm_regex = re.compile(
 PTMmotif = namedtuple("PTMmotif", "kind match start end")
 
 
-def find_ptm_motifs(seq, report=False):
-    if not (matches := list(amino_acid_ptm_regex.finditer(seq))):
-        return
-    return [
-        PTMmotif(mo.lastgroup, mo.group(0), mo.start(), mo.end())
-        for mo in matches
-    ]
+def find_ptm_motifs(seq: str, verbose: bool = True) -> Union[PTMmotif, bool]:
+    if not (matches := tuple(amino_acid_ptm_regex.finditer(seq))):
+        return False
+    if verbose:
+        return [
+            PTMmotif(mo.lastgroup, mo.group(0), mo.start(), mo.end())
+            for mo in matches
+        ]
+    return True
