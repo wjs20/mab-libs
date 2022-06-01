@@ -1,7 +1,7 @@
 import re
 from collections import namedtuple
 
-amino_acid_liability_specification = (
+amino_acid_ptm_specification = (
     ("GLYCOSYLATION_MOTIF", r"N[^P][ST]"),
     ("DEAMIDATION_MOTIF", r"N[GSA]"),
     ("ISOMERIZATION_MOTIF", r"D[GS]"),
@@ -9,25 +9,20 @@ amino_acid_liability_specification = (
     ("OXIDATION_MOTIF", r"M"),
 )
 
-amino_acid_liability_regex = re.compile(
-    "|".join("(?P<%s>%s)" % pair for pair in amino_acid_liability_specification)
+amino_acid_ptm_regex = re.compile(
+    "|".join(
+        f"(?P<{name}>{pattern})"
+        for name, pattern in amino_acid_ptm_specification
+    )
 )
 
-Liability = namedtuple("Liability", "kind match start end")
+PTMmotif = namedtuple("PTMmotif", "kind match start end")
 
 
-def find_liabilities(seq, report=False):
-    matches = list(amino_acid_liability_regex.finditer(seq))
-    if not matches:
+def find_ptm_motifs(seq, report=False):
+    if not (matches := list(amino_acid_ptm_regex.finditer(seq))):
         return
-    if not report:
-        return True
     return [
-        Liability(mo.lastgroup, mo.group(0), mo.start(), mo.end()) for mo in matches
+        PTMmotif(mo.lastgroup, mo.group(0), mo.start(), mo.end())
+        for mo in matches
     ]
-
-
-if __name__ == "__main__":
-    test_seqs = ["ATG"]
-
-    print(find_liabilities(test_seqs[0]))
